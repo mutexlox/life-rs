@@ -130,6 +130,7 @@ fn block() {
 fn blinker() {
     let vec = vec![vec![true, true, true]];
     let mut game = LifeGame::new(vec);
+    let game_clone = game.clone();
     game.step();
     assert_eq!(
         game,
@@ -152,4 +153,5 @@ fn blinker() {
             max_y: 2,
         }
     );
+    assert_eq!(game, game_clone);
 }
