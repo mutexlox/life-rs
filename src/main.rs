@@ -2,7 +2,7 @@ use std::collections::HashSet;
 use std::convert::TryInto;
 use std::vec::Vec;
 
-#[derive(Debug, PartialEq, Eq)]
+#[derive(Debug, PartialEq, Eq, Clone)]
 struct LifeGame {
     board: HashSet<(i32, i32)>,
     min_x: i32,
@@ -55,25 +55,84 @@ impl LifeGame {
         live
     }
 
-    /// step takes one step in the given game of life
+    /// step takes one step in the given LifeGame.
     pub fn step(&mut self) {
-        for x in self.min_x..self.max_x {
-            for y in self.min_y..self.max_y {
+        let mut new_game = self.clone();
+        for x in (self.min_x - 1)..(self.max_x + 2) {
+            for y in (self.min_y - 1)..(self.max_y + 2) {
                 let live_neighbors = self.count_live_neighbors(x, y);
                 if self.board.contains(&(x, y)) {
                     if live_neighbors < 2 || live_neighbors > 3 {
-                        self.board.remove(&(x, y));
+                        new_game.board.remove(&(x, y));
                     }
                 } else {
                     if live_neighbors == 3 {
-                        self.board.insert((x, y));
+                        new_game.board.insert((x, y));
+                        if x < new_game.min_x {
+                            new_game.min_x = x;
+                        }
+                        if x > new_game.max_x {
+                            new_game.max_x = x
+                        }
+                        if y < new_game.min_y {
+                            new_game.min_y = y;
+                        }
+                        if y > new_game.max_y {
+                            new_game.max_y = y
+                        }
                     }
                 }
             }
         }
+        *self = new_game.clone();
     }
 }
 
 fn main() {
     println!("Hello, world!");
+}
+
+#[test]
+fn empty_is_noop() {
+    let mut game = LifeGame::new(Vec::new());
+    let game_clone = game.clone();
+    game.step();
+    assert_eq!(game, game_clone);
+}
+
+#[test]
+fn block() {
+    let vec = vec![vec![true, true], vec![true, true]];
+    let mut game = LifeGame::new(vec);
+    let game_clone = game.clone();
+    game.step();
+    assert_eq!(game, game_clone);
+}
+
+#[test]
+fn blinker() {
+    let vec = vec![vec![true, true, true]];
+    let mut game = LifeGame::new(vec);
+    game.step();
+    assert_eq!(
+        game,
+        LifeGame {
+            board: [(-1, 1), (0, 1), (1, 1)].iter().cloned().collect(),
+            min_x: -1,
+            min_y: 0,
+            max_x: 1,
+            max_y: 2,
+        }
+    );
+    game.step();
+    assert_eq!(
+        game,
+        LifeGame {
+            board: [(0, 0), (0, 1), (0, 2)].iter().cloned().collect(),
+            min_x: -1,
+            min_y: 0,
+            max_x: 1,
+            max_y: 2,
+        }
+    );
 }
