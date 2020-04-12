@@ -55,6 +55,34 @@ impl LifeGame {
         live
     }
 
+    /// update the min and max values of "self"
+    fn update_extrema(&mut self) {
+        self.max_x = *self
+            .board
+            .iter()
+            .max_by(|(x1, _), (x2, _)| x1.cmp(x2))
+            .map(|(x, _)| x)
+            .unwrap_or(&0);
+        self.min_x = *self
+            .board
+            .iter()
+            .min_by(|(x1, _), (x2, _)| x1.cmp(x2))
+            .map(|(x, _)| x)
+            .unwrap_or(&0);
+        self.max_y = *self
+            .board
+            .iter()
+            .max_by(|(_, y1), (_, y2)| y1.cmp(y2))
+            .map(|(_, y)| y)
+            .unwrap_or(&0);
+        self.min_y = *self
+            .board
+            .iter()
+            .min_by(|(_, y1), (_, y2)| y1.cmp(y2))
+            .map(|(_, y)| y)
+            .unwrap_or(&0);
+    }
+
     /// step takes one step in the given LifeGame.
     pub fn step(&mut self) {
         let mut new_game = self.clone();
@@ -68,22 +96,11 @@ impl LifeGame {
                 } else {
                     if live_neighbors == 3 {
                         new_game.board.insert((x, y));
-                        if x < new_game.min_x {
-                            new_game.min_x = x;
-                        }
-                        if x > new_game.max_x {
-                            new_game.max_x = x
-                        }
-                        if y < new_game.min_y {
-                            new_game.min_y = y;
-                        }
-                        if y > new_game.max_y {
-                            new_game.max_y = y
-                        }
                     }
                 }
             }
         }
+        new_game.update_extrema();
         *self = new_game.clone();
     }
 }
@@ -119,9 +136,9 @@ fn blinker() {
         LifeGame {
             board: [(-1, 1), (0, 1), (1, 1)].iter().cloned().collect(),
             min_x: -1,
-            min_y: 0,
+            min_y: 1,
             max_x: 1,
-            max_y: 2,
+            max_y: 1,
         }
     );
     game.step();
@@ -129,9 +146,9 @@ fn blinker() {
         game,
         LifeGame {
             board: [(0, 0), (0, 1), (0, 2)].iter().cloned().collect(),
-            min_x: -1,
+            min_x: 0,
             min_y: 0,
-            max_x: 1,
+            max_x: 0,
             max_y: 2,
         }
     );
