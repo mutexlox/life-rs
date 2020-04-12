@@ -155,3 +155,87 @@ fn blinker() {
     );
     assert_eq!(game, game_clone);
 }
+
+#[test]
+fn glider() {
+    let vec = vec![
+        vec![false, true, false],
+        vec![false, false, true],
+        vec![true, true, true],
+    ];
+
+    let mut game = LifeGame::new(vec);
+    assert_eq!(
+        game,
+        LifeGame {
+            board: [(0, 1), (1, 2), (2, 0), (2, 1), (2, 2)]
+                .iter()
+                .cloned()
+                .collect(),
+            min_x: 0,
+            min_y: 0,
+            max_x: 2,
+            max_y: 2,
+        }
+    );
+
+    game.step();
+    assert_eq!(
+        game,
+        LifeGame {
+            board: [(1, 0), (1, 2), (2, 1), (2, 2), (3, 1)]
+                .iter()
+                .cloned()
+                .collect(),
+            min_x: 1,
+            min_y: 0,
+            max_x: 3,
+            max_y: 2,
+        }
+    );
+
+    game.step();
+    assert_eq!(
+        game,
+        LifeGame {
+            board: [(1, 2), (2, 0), (2, 2), (3, 1), (3, 2)]
+                .iter()
+                .cloned()
+                .collect(),
+            min_x: 1,
+            min_y: 0,
+            max_x: 3,
+            max_y: 2,
+        }
+    );
+
+    game.step();
+    assert_eq!(
+        game,
+        LifeGame {
+            board: [(1, 1), (2, 2), (2, 3), (3, 1), (3, 2)]
+                .iter()
+                .cloned()
+                .collect(),
+            min_x: 1,
+            min_y: 1,
+            max_x: 3,
+            max_y: 3,
+        }
+    );
+
+    game.step();
+    assert_eq!(
+        game,
+        LifeGame {
+            board: [(1, 2), (2, 3), (3, 1), (3, 2), (3, 3)]
+                .iter()
+                .cloned()
+                .collect(),
+            min_x: 1,
+            min_y: 1,
+            max_x: 3,
+            max_y: 3,
+        }
+    );
+}
