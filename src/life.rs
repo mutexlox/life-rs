@@ -1,5 +1,6 @@
 use std::collections::HashSet;
 use std::convert::TryInto;
+use std::fmt;
 use std::vec::Vec;
 
 #[derive(Debug, PartialEq, Eq, Clone)]
@@ -84,6 +85,25 @@ impl LifeGame {
         }
         new_game.update_extrema();
         *self = new_game.clone();
+    }
+}
+
+impl fmt::Display for LifeGame {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        // TODO: This is a bit hacky. maybe let the board move?
+        for x in 0..50 {
+            for y in 0..80 {
+                let c = if self.board.contains(&(x, y)) {
+                    "#"
+                } else {
+                    " "
+                };
+
+                write!(f, "{}", c)?;
+            }
+            write!(f, "\n")?;
+        }
+        Ok(())
     }
 }
 
