@@ -59,10 +59,10 @@ impl LifeGame {
     fn update_extrema(&mut self) {
         let xs: HashSet<_> = self.board.iter().map(|(x, _)| *x).collect();
         let ys: HashSet<_> = self.board.iter().map(|(_, y)| *y).collect();
-        self.max_x = *xs.iter().max().unwrap_or(&0);
-        self.min_x = *xs.iter().min().unwrap_or(&0);
-        self.max_y = *ys.iter().max().unwrap_or(&0);
-        self.min_y = *ys.iter().min().unwrap_or(&0);
+        self.max_x = xs.iter().max().cloned().unwrap_or(0);
+        self.min_x = xs.iter().min().cloned().unwrap_or(0);
+        self.max_y = ys.iter().max().cloned().unwrap_or(0);
+        self.min_y = ys.iter().min().cloned().unwrap_or(0);
     }
 
     /// step takes one step in the given LifeGame.
