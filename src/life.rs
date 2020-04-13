@@ -3,7 +3,7 @@ use std::convert::TryInto;
 use std::vec::Vec;
 
 #[derive(Debug, PartialEq, Eq, Clone)]
-struct LifeGame {
+pub struct LifeGame {
     board: HashSet<(i32, i32)>,
     min_x: i32,
     min_y: i32,
